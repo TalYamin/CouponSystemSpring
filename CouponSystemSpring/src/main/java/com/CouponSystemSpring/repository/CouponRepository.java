@@ -1,20 +1,24 @@
 package com.CouponSystemSpring.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.CouponSystemSpring.model.Coupon;
+import com.CouponSystemSpring.model.CouponType;
 
 @Repository
 public interface CouponRepository extends JpaRepository<Coupon, Long> {
 	
-	public List<Coupon> findAllByCouponId(long couponId);
+	public List<Coupon> findAllByCompanyCompanyId(long companyId); 
 	
-	public List<Coupon> findAllByCouponIdAndType(long couponId, String typeName);
+	public List<Coupon> findAllByCompanyCompanyIdAndType(long companyId, CouponType typeName);
 	
-	public List<Coupon> findAllByCouponIdAndPrice(long couponId, double priceTop);
+	public List<Coupon> findAllByCompanyCompanyIdAndPrice(long companyId, double priceTop);
 	
-	public List<Coupon> findAllByCouponIdAndEndDate(long couponId, String untilDate);
+	public List<Coupon> findAllByCompanyCompanyIdAndEndDate(long companyId, LocalDate untilDate);
+	
+	public void deleteAllByCompanyCompanyId(long companyId);
 }

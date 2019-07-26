@@ -5,15 +5,23 @@ import java.time.LocalDate;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapKey;
 import javax.persistence.Transient;
 
 import com.CouponSystemSpring.utils.DateConverterUtil;
 
-import lombok.AllArgsConstructor;
+
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
@@ -24,49 +32,54 @@ public class Coupon {
 	@Id
 	@Basic(optional = false)
 	@Column(nullable = false)
-	private long couponId;
+	private @NonNull long couponId;
 	
 	@Basic(optional = false)
 	@Column(nullable = false)
-	private String title; 
+	private @NonNull String title; 
 	
 	@Basic(optional = false)
 	@Column(nullable = false)
-	private LocalDate startDate;
+	private @NonNull LocalDate startDate;
 	
 	@Basic(optional = false)
 	@Column(nullable = false)
-	private LocalDate endDate;
+	private @NonNull LocalDate endDate;
 	
 	@Basic(optional = false)
 	@Column(nullable = false)
-	private int amount;
+	private @NonNull int amount;
 	
 	@Basic(optional = false)
 	@Column(nullable = false)
-	private CouponType type;
+	@Enumerated(EnumType.STRING)
+	private @NonNull CouponType type;
 	
 	@Basic(optional = false)
 	@Column(nullable = false)
-	private String couponMessage;
+	private @NonNull String couponMessage;
 	
 	@Basic(optional = false)
 	@Column(nullable = false)
-	private double price;
+	private @NonNull double price;
 	
 	@Basic(optional = false)
 	@Column(nullable = false)
-	private String image;
+	private @NonNull String image;
 	
 	@Basic(optional = false)
 	@Column(nullable = false)
-	private boolean active;
+	private @NonNull boolean active;
 	
 	@Transient
 	private String customStartDate;
 	
 	@Transient
 	private String customEndDate;
+	
+	@ToString.Exclude
+	@ManyToOne
+	private Company company;
 	
 	public Coupon(long couponId, String title, String endDate, int amount, CouponType type, String couponMessage,
 			double price, String image) {

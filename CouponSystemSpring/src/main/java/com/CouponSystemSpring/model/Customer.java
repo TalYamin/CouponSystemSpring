@@ -8,24 +8,26 @@ import javax.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class Customer {
 	
 	@Id
 	@Basic(optional = false)
 	@Column(nullable = false)
-	private long customerId;
+	private @NonNull long customerId;
 	
 	@Basic(optional = false)
 	@Column(nullable = false)
-	private String customerName;
+	private @NonNull String customerName;
 	
 	@Basic(optional = false)
 	@Column(nullable = false)
-	private String customerPassword;
+	private @NonNull String customerPassword;
 
 }
