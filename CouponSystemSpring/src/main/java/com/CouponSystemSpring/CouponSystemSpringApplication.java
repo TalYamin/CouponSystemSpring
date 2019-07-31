@@ -13,12 +13,14 @@ import com.CouponSystemSpring.model.Coupon;
 import com.CouponSystemSpring.model.CouponType;
 import com.CouponSystemSpring.repository.CompanyRepository;
 import com.CouponSystemSpring.repository.CouponRepository;
+import com.CouponSystemSpring.service.AdminService;
+import com.CouponSystemSpring.service.AdminServiceImpl;
 
 @SpringBootApplication
 @ComponentScan({ "com.CouponSystemSpring" })
 public class CouponSystemSpringApplication {
 
-	public static void main(String[] args){
+	public static void main(String[] args) throws Exception{
 		ConfigurableApplicationContext applicationContext = SpringApplication.run(CouponSystemSpringApplication.class,
 				args);
 
@@ -110,10 +112,14 @@ public class CouponSystemSpringApplication {
 		List<Coupon>couponsList = couponRepository.findAllByCompanyCompanyIdAndEndDate(5432 ,LocalDate.of(2019, 12, 31));
 		System.err.println(couponsList);
 		
+		Company company3 = new Company(4321, "Asus", "Asus4321", "asus@gmail.com");
+		AdminService adminService = applicationContext.getBean(AdminServiceImpl.class);
+		adminService.addCompany(company3);
+		
 //		HelperClass helperClass = new HelperClass();
 //		helperClass.removeCompany(companyRepository, couponRepository, company2);
 		
-		// applicationContext.close();
+		
 
 	}
 

@@ -7,5 +7,6 @@ import com.CouponSystemSpring.model.Company;
 
 @Repository
 public interface CompanyRepository extends JpaRepository<Company, Long> {
-
+	
+	public Company findByCompanyName (String companyName);
 }
