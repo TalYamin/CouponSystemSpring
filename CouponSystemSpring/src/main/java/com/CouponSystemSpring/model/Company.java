@@ -43,7 +43,7 @@ public class Company {
 	private @NonNull String companyEmail;
 	
 	@ToString.Exclude
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "company")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "company")
 	private List<Coupon> coupons = new ArrayList<Coupon>();
 
 }

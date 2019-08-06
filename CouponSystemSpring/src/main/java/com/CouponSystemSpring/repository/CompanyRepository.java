@@ -9,4 +9,8 @@ import com.CouponSystemSpring.model.Company;
 public interface CompanyRepository extends JpaRepository<Company, Long> {
 	
 	public Company findByCompanyName (String companyName);
+	
+	public boolean existsByCompanyName (String companyName);
+	
+	
 }
