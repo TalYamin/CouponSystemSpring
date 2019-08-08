@@ -22,4 +22,6 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
 	public List<Coupon> findAllByCompanyCompanyIdAndEndDate(long companyId, LocalDate untilDate);
 	
 	public long deleteByCompanyCompanyId(long companyId);
+	
+	public boolean existsByTitle (String title);
 }
