@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,7 +46,7 @@ public class IncomeController {
 		return badResult;
 	}
 	
-	@RequestMapping("/viewAllIncome")
+	@GetMapping("/viewAllIncome")
 	public ResponseEntity<List<Income>> viewAllIncome() throws Exception{
 		try {
 			List<Income> incomes = incomeService.viewAllIncome();
@@ -64,6 +65,30 @@ public class IncomeController {
 		}
 		return null;
 	}
+	
+	@GetMapping("/viewIncomeByCustomer")
+	public ResponseEntity<List<Income>> viewIncomeByCustomer(@RequestBody long customerId) throws Exception {
+		try {
+			List<Income> incomesByCustomer = incomeService.viewIncomeByCustomer(customerId);
+		if (!incomesByCustomer.isEmpty()) {
+			System.out.println("All incomes By Customer was returned in success");
+			ResponseEntity<List<Income>> result = new ResponseEntity<>(incomesByCustomer, HttpStatus.OK);
+			return result;
+		}
+		else {
+			throw new IncomeControllerException("Failed to view all incomes by customer");
+		}
+		}catch (IncomeControllerException e) {
+			System.out.println(e.getMessage());
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;	
+	}
+	
+	
+	
+	
 
 	
 }
