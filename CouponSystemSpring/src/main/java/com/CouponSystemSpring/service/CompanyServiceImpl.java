@@ -19,6 +19,8 @@ import com.CouponSystemSpring.repository.CouponRepository;
 import com.CouponSystemSpring.utils.DateConverterUtil;
 import com.CouponSystemSpring.utils.ServiceStatus;
 
+import net.bytebuddy.asm.Advice.This;
+
 @Service
 public class CompanyServiceImpl implements CompanyService, CouponClient {
 
@@ -33,7 +35,6 @@ public class CompanyServiceImpl implements CompanyService, CouponClient {
 	@Resource
 	private ServiceStatus serviceStatus;
 
-	@Resource
 	private Company company;
 
 	public CompanyServiceImpl() {
@@ -70,13 +71,25 @@ public class CompanyServiceImpl implements CompanyService, CouponClient {
 						coupon.getTitle(), this.company.getCompanyId());
 			}
 
-			// id of company near coupon
-			
-			couponRepository.save(coupon);
+			// The issue is here - the join table value stay null
+		
+			System.err.println(this.company);
 			List<Coupon>couponsList = this.company.getCoupons();
 			couponsList.add(coupon);
+			System.err.println(couponsList);
 			this.company.setCoupons(couponsList);
+			System.err.println(this.company);
+			couponRepository.save(coupon);
 			companyRepository.save(this.company);
+			couponRepository.save(coupon);
+			
+//			couponRepository.save(coupon);
+//			List<Coupon>couponsList = this.company.getCoupons();
+//			couponsList.add(coupon);
+//			this.company.setCoupons(couponsList);
+//			companyRepository.save(this.company);
+//			couponRepository.save(coupon);
+			
 			System.out.println("Company " + this.company.getCompanyName() + " added new coupon: " + coupon.getCouponId());
 			serviceStatus.setSuccess(true);
 			serviceStatus.setMessage("success, Company " + this.company.getCompanyName() + " added new coupon: " + coupon.getCouponId());
@@ -95,6 +108,7 @@ public class CompanyServiceImpl implements CompanyService, CouponClient {
 			serviceStatus.setSuccess(false);
 			serviceStatus.setMessage(e.getMessage());
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new Exception("Company failed to add coupon. couponId: " + coupon.getCouponId());
 		}
 

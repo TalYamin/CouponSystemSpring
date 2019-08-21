@@ -2,13 +2,13 @@ package com.CouponSystemSpring.exception;
 
 
 
-public class AdminServiceException extends Exception {
+public class AdminControllerException extends Exception {
 
 	private long clientId;
 	private String clientName;
 	private String clientType;
 
-	public AdminServiceException(String message, long clientId, String clientName, String clientType) {
+	public AdminControllerException(String message, long clientId, String clientName, String clientType) {
 		super(String.format(message + "client id: %d, client name: %s, client type: %s ", clientId, clientName,
 				clientType));
 		this.clientId = clientId;
@@ -16,7 +16,7 @@ public class AdminServiceException extends Exception {
 		this.clientType = clientType;
 	}
 	
-	public AdminServiceException(String message) {
+	public AdminControllerException(String message) {
 		super(message);
 	}
 
