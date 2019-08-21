@@ -8,6 +8,8 @@ import org.springframework.context.annotation.ComponentScan;
 import com.CouponSystemSpring.model.Company;
 import com.CouponSystemSpring.model.Coupon;
 import com.CouponSystemSpring.model.CouponType;
+import com.CouponSystemSpring.repository.CompanyRepository;
+import com.CouponSystemSpring.repository.CouponRepository;
 import com.CouponSystemSpring.service.AdminService;
 import com.CouponSystemSpring.service.AdminServiceImpl;
 import com.CouponSystemSpring.service.CompanyServiceImpl;
@@ -134,13 +136,14 @@ public class CouponSystemSpringApplication {
 		// adminService.updateCompany(1, "a", "a");
 
 		/** Updating Something **/
-		// Company company2 = new Company(4321, "Asus", "Asus4321", "asus@gmail.com");
+		 Company company2 = new Company(4321, "Asus", "Asus4321", "asus@gmail.com");
 		// Company company = companyRepository.findById((long) 4321).get();
 		// company.setCompanyPassword("Asus4321");
 		// companyRepository.save(company);
 
 		/** Admin Service Test **/
 		AdminService adminService = applicationContext.getBean(AdminServiceImpl.class);
+		adminService.addCompany(company2);
 		// System.out.println(adminService.addCompany(new Company(9999, "Acer",
 		// "Acer9999", "info@acer.com")));
 		// System.out.println(adminService.removeCompany(9999));
@@ -158,15 +161,37 @@ public class CouponSystemSpringApplication {
 		// adminService.getCustomer(456);
 		// adminService.getCompany(4321);
 
+//		adminService.addCompany(company);
+		
 		/***/
 		CompanyServiceImpl companyService = applicationContext.getBean(CompanyServiceImpl.class);
 		companyService.setCompany(company);
-		System.out.println(companyService
+		
+		CompanyServiceImpl companyService2 = applicationContext.getBean(CompanyServiceImpl.class);
+		companyService2.setCompany(company2);
+		
+		System.out.println(companyService2
 				.addCoupon(new Coupon(21, "Karting", "31/12/2019", 5, CouponType.SPORTS, "Karting for couple", 500.5,
 						"https://icarexperience.ca/wp-content/uploads/2016/03/Vignette_karting_hp.jpg")));
 
+//		CompanyRepository companyRepository = applicationContext.getBean(CompanyRepository.class);
+//		Company company2 = companyRepository.findById((long) 5432).get();
+//		System.err.println(	company2.getCoupons());
+		
+		
+		/** New Issue - another company can remove coupon that not belongs it*/
+		
+		System.err.println(companyService.getCompany());
+		System.err.println(companyService2.getCompany());
+//		System.out.println(companyService.removeCoupon(21));
+		
+//		company2 = companyRepository.findById((long) 5432).get();
+//		System.err.println(	company2.getCoupons());
+		
 //		CouponRepository couponRepository  = applicationContext.getBean(CouponRepository.class);
 //		couponRepository.deleteById((long) 21);
+		
+//		System.err.println(couponRepository.existsByCouponIdAndCompanyCompanyId(22, 5432));
 		
 //		IncomeRepository incomeRepository = applicationContext.getBean(IncomeRepository.class);
 //		incomeRepository.save(new Income("Dell", 9876, LocalDate.now(), IncomeType.COMPANY_NEW_COUPON,100));
