@@ -170,20 +170,25 @@ public class CouponSystemSpringApplication {
 		CompanyServiceImpl companyService2 = applicationContext.getBean(CompanyServiceImpl.class);
 		companyService2.setCompany(company2);
 		
-		System.out.println(companyService2
-				.addCoupon(new Coupon(21, "Karting", "31/12/2019", 5, CouponType.SPORTS, "Karting for couple", 500.5,
-						"https://icarexperience.ca/wp-content/uploads/2016/03/Vignette_karting_hp.jpg")));
+//		System.out.println(companyService2
+//				.addCoupon(new Coupon(21, "Karting", "31/12/2019", 5, CouponType.SPORTS, "Karting for couple", 500.5,
+//						"https://icarexperience.ca/wp-content/uploads/2016/03/Vignette_karting_hp.jpg")));
 
 //		CompanyRepository companyRepository = applicationContext.getBean(CompanyRepository.class);
 //		Company company2 = companyRepository.findById((long) 5432).get();
 //		System.err.println(	company2.getCoupons());
 		
+//		System.err.println(companyService.getCompany().getCompanyId());
 		
 		/** New Issue - another company can remove coupon that not belongs it*/
 		
-		System.err.println(companyService.getCompany());
-		System.err.println(companyService2.getCompany());
-//		System.out.println(companyService.removeCoupon(21));
+		System.out.println(companyService2.removeCoupon(22));
+		
+		
+//		System.err.println(companyService.getCompany());
+//		System.err.println(companyService2.getCompany());
+
+/**		System.out.println(companyService.removeCoupon(21)); **/
 		
 //		company2 = companyRepository.findById((long) 5432).get();
 //		System.err.println(	company2.getCoupons());
