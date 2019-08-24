@@ -1,21 +1,23 @@
 package com.CouponSystemSpring.model;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.Transient;
 
 import com.CouponSystemSpring.utils.DateConverterUtil;
-
-
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -81,12 +83,19 @@ public class Coupon {
 	@ManyToOne
 	private Company company;
 	
+	@ToString.Exclude
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "coupons", cascade=CascadeType.ALL)
+	@MapKey(name="customerId")
+	private Map<Long,Customer> customers = new HashMap<>();;
+	
 	public Coupon(long couponId, String title, String endDate, int amount, CouponType type, String couponMessage,
 			double price, String image) {
 		setCouponId(couponId);
 		setTitle(title);
 		setStartDate(LocalDate.now());
 		setEndDate(DateConverterUtil.convertStringDate(endDate));
+//		setStartDate(LocalDate.now().plusDays(1));
+//		setEndDate(DateConverterUtil.convertStringDate(endDate).plusDays(1));
 		setAmount(amount);
 		setType(type);
 		setCouponMessage(couponMessage);

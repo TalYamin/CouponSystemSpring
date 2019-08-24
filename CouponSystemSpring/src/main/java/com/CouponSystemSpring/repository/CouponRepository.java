@@ -17,13 +17,14 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
 	
 	public List<Coupon> findAllByCompanyCompanyIdAndType(long companyId, CouponType typeName);
 	
-	public List<Coupon> findAllByCompanyCompanyIdAndPrice(long companyId, double priceTop);
+	public List<Coupon> findAllByCompanyCompanyIdAndPriceLessThanEqual(long companyId, double priceTop);
 	
-	public List<Coupon> findAllByCompanyCompanyIdAndEndDate(long companyId, LocalDate untilDate);
+	public List<Coupon> findAllByCompanyCompanyIdAndEndDateLessThanEqual(long companyId, LocalDate untilDate);
 	
 	public long deleteByCompanyCompanyId(long companyId);
 	
 	public boolean existsByTitle (String title);
 	
 	public boolean existsByCouponIdAndCompanyCompanyId(long couponId, long companyId);
+
 }

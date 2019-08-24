@@ -13,12 +13,15 @@ import org.springframework.stereotype.Service;
 import com.CouponSystemSpring.exception.AmountException;
 import com.CouponSystemSpring.exception.CouponExistsException;
 import com.CouponSystemSpring.exception.EndDatePassedException;
+import com.CouponSystemSpring.exception.NoDetailsFoundException;
 import com.CouponSystemSpring.exception.NotBelongsException;
 import com.CouponSystemSpring.exception.ObjectNotFoundException;
 import com.CouponSystemSpring.model.Company;
 import com.CouponSystemSpring.model.Coupon;
+import com.CouponSystemSpring.model.CouponType;
 import com.CouponSystemSpring.repository.CompanyRepository;
 import com.CouponSystemSpring.repository.CouponRepository;
+import com.CouponSystemSpring.utils.CouponTypeConverter;
 import com.CouponSystemSpring.utils.DateConverterUtil;
 import com.CouponSystemSpring.utils.ServiceStatus;
 
@@ -151,55 +154,231 @@ public class CompanyServiceImpl implements CompanyService, CouponClient {
 		return serviceStatus;
 	}
 
+	/**
+	 * There is issue with MySQL - lost day of end date any time there is update
+	 **/
+
 	@Transactional
 	@Override
 	public ServiceStatus updateCoupon(long couponId, String newEndDate, double newPrice) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+
+		try {
+
+			if (!couponRepository.existsById(couponId)) {
+				throw new ObjectNotFoundException("couponId does not exist in system", this.company.getCompanyId(),
+						this.clientType, couponId);
+			}
+
+			if (!couponRepository.existsByCouponIdAndCompanyCompanyId(couponId, this.company.getCompanyId())) {
+				throw new NotBelongsException(
+						"Company failed to update coupon - this coupon not belongs to this company. ",
+						this.company.getCompanyId(), this.clientType.toString(), couponId);
+			}
+
+			Coupon coupon = couponRepository.findById(couponId).get();
+			coupon.setStartDate(coupon.getStartDate());
+			coupon.setEndDate(DateConverterUtil.convertStringDate(newEndDate));
+			coupon.setPrice(newPrice);
+
+			System.err.println(coupon.getStartDate());
+			System.err.println(couponRepository.findById(couponId).get().getStartDate());
+			System.err.println(coupon.getEndDate());
+			System.err.println(couponRepository.findById(couponId).get().getEndDate());
+			System.err.println(LocalDate.now());
+
+			if (coupon.getEndDate().isBefore(LocalDate.now())) {
+				throw new EndDatePassedException("Company failed to update coupon - the end date already passed. ",
+						newEndDate, coupon.getCouponId(), this.company.getCompanyId());
+			}
+
+			couponRepository.save(coupon);
+
+			System.out.println("Company " + this.company.getCompanyName() + " updated coupon: " + coupon.getCouponId());
+			serviceStatus.setSuccess(true);
+			serviceStatus.setMessage(
+					"success, Company " + this.company.getCompanyName() + " updated coupon: " + coupon.getCouponId());
+			return serviceStatus;
+
+		} catch (ObjectNotFoundException e) {
+			System.err.println(e.getMessage());
+			serviceStatus.setSuccess(false);
+			serviceStatus.setMessage(e.getMessage());
+		} catch (NotBelongsException e) {
+			System.err.println(e.getMessage());
+			serviceStatus.setSuccess(false);
+			serviceStatus.setMessage(e.getMessage());
+		} catch (EndDatePassedException e) {
+			System.err.println(e.getMessage());
+			serviceStatus.setSuccess(false);
+			serviceStatus.setMessage(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("Company failed to update coupon. couponId: " + couponId);
+		}
+
+		return serviceStatus;
 	}
 
 	@Transactional
 	@Override
 	public Company getCompany() throws Exception {
-		// TODO Auto-generated method stub
+
+		try {
+
+			if (!companyRepository.existsById(this.company.getCompanyId())) {
+				throw new ObjectNotFoundException("company does not exist in system", this.company.getCompanyId(),
+						this.clientType, this.company.getCompanyId());
+			}
+
+			Company company = companyRepository.findById(this.company.getCompanyId()).get();
+			return company;
+
+		} catch (ObjectNotFoundException e) {
+			System.err.println(e.getMessage());
+		} catch (Exception e) {
+			throw new Exception("Company failed to get company details. companyId: " + this.company.getCompanyId());
+		}
 		return null;
 	}
 
 	@Transactional
 	@Override
 	public Coupon getCoupon(long couponId) throws Exception {
-		// TODO Auto-generated method stub
+		try {
+
+			if (!couponRepository.existsById(couponId)) {
+				throw new ObjectNotFoundException("couponId does not exist in system", this.company.getCompanyId(),
+						this.clientType, couponId);
+			}
+
+			if (!couponRepository.existsByCouponIdAndCompanyCompanyId(couponId, this.company.getCompanyId())) {
+				throw new NotBelongsException(
+						"Company failed to get coupon - this coupon not belongs to this company. ",
+						this.company.getCompanyId(), this.clientType.toString(), couponId);
+			}
+
+			Coupon coupon = couponRepository.findById(couponId).get();
+			return coupon;
+
+		} catch (ObjectNotFoundException e) {
+			System.err.println(e.getMessage());
+		} catch (NotBelongsException e) {
+			System.err.println(e.getMessage());
+		} catch (Exception e) {
+			throw new Exception("Company failed to get coupon data. companyId: " + this.company.getCompanyId());
+		}
+
 		return null;
 	}
 
 	@Transactional
 	@Override
 	public List<Coupon> getAllCoupons() throws Exception {
-		// TODO Auto-generated method stub
+		try {
+
+			List<Coupon> coupons = couponRepository.findAllByCompanyCompanyId(this.company.getCompanyId());
+
+			if (coupons.isEmpty()) {
+				throw new NoDetailsFoundException(
+						"Company " + this.company.getCompanyId() + " failed to get all coupons - no details found",
+						this.company.getCompanyId(), this.clientType);
+			}
+
+			return coupons;
+
+		} catch (NoDetailsFoundException e) {
+			System.err.println(e.getMessage());
+		} catch (Exception e) {
+			throw new Exception("Company failed to get coupons data. companyId: " + this.company.getCompanyId());
+		}
 		return null;
 	}
 
 	@Transactional
 	@Override
 	public List<Coupon> getAllCouponsByType(String typeName) throws Exception {
-		// TODO Auto-generated method stub
+		try {
+
+			CouponType couponType = CouponTypeConverter.convertStringToType(typeName);
+
+			List<Coupon> coupons = couponRepository.findAllByCompanyCompanyIdAndType(this.company.getCompanyId(),
+					couponType);
+
+			if (coupons.isEmpty()) {
+				throw new NoDetailsFoundException(
+						"Company " + this.company.getCompanyId()
+								+ " failed to get all coupons by type - no details found",
+						this.company.getCompanyId(), this.clientType);
+			}
+
+			return coupons;
+
+		} catch (NoDetailsFoundException e) {
+			System.err.println(e.getMessage());
+		} catch (Exception e) {
+			throw new Exception("Company failed to get coupons data by Type. companyId: " + this.company.getCompanyId()
+					+ " couponType: " + typeName);
+		}
+
 		return null;
 	}
 
 	@Transactional
 	@Override
 	public List<Coupon> getAllCouponsByPrice(double priceTop) throws Exception {
-		// TODO Auto-generated method stub
+
+		try {
+
+			List<Coupon> coupons = couponRepository
+					.findAllByCompanyCompanyIdAndPriceLessThanEqual(this.company.getCompanyId(), priceTop);
+
+			if (coupons.isEmpty()) {
+				throw new NoDetailsFoundException(
+						"Company " + this.company.getCompanyId()
+								+ " failed to get all coupons by price - no details found",
+						this.company.getCompanyId(), this.clientType);
+			}
+
+			return coupons;
+
+		} catch (NoDetailsFoundException e) {
+			System.err.println(e.getMessage());
+		} catch (Exception e) {
+			throw new Exception("Company failed to get coupons data by Price. companyId: " + this.company.getCompanyId()
+					+ " priceTop: " + priceTop);
+		}
+
 		return null;
 	}
 
 	@Transactional
 	@Override
 	public List<Coupon> getAllCouponsByDate(String untilDate) throws Exception {
-		// TODO Auto-generated method stub
+		try {
+
+			List<Coupon> coupons = couponRepository.findAllByCompanyCompanyIdAndEndDateLessThanEqual(
+					this.company.getCompanyId(), DateConverterUtil.convertStringDate(untilDate));
+
+			if (coupons.isEmpty()) {
+				throw new NoDetailsFoundException(
+						"Company " + this.company.getCompanyId()
+								+ " failed to get all coupons by date - no details found",
+						this.company.getCompanyId(), this.clientType);
+			}
+
+			return coupons;
+
+		} catch (NoDetailsFoundException e) {
+			System.err.println(e.getMessage());
+		} catch (Exception e) {
+			throw new Exception("Company failed to get coupons data by Date. companyId: " + this.company.getCompanyId()
+					+ " untilDate: " + untilDate);
+		}
+
 		return null;
 	}
 
+	@Transactional
 	@Override
 	public CouponClient login(String name, String password, ClientType clientType) throws Exception {
 		// TODO Auto-generated method stub
