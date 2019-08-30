@@ -4,9 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.MapKey;
 
@@ -35,9 +38,19 @@ public class Customer {
 	@Column(nullable = false)
 	private @NonNull String customerPassword;
 	
-	@ToString.Exclude
-	@ManyToMany
+	
+	@ManyToMany(cascade = { CascadeType.ALL })
 	@MapKey(name="couponId")
+    @JoinTable(
+        name = "Customer_Coupon", 
+        joinColumns = { @JoinColumn(name= "customer_id") }, 
+        inverseJoinColumns = { @JoinColumn(name = "coupon_id") }
+    )
 	private Map<Long,Coupon> coupons = new HashMap<>();
+	
+//	@ToString.Exclude
+//	@ManyToMany
+//	@MapKey(name="couponId")
+//	private Map<Long,Coupon> coupons = new HashMap<>();
 
 }

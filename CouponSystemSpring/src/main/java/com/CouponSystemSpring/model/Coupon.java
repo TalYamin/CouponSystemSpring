@@ -84,9 +84,14 @@ public class Coupon {
 	private Company company;
 	
 	@ToString.Exclude
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "coupons", cascade=CascadeType.ALL)
+	@ManyToMany(mappedBy = "coupons")
 	@MapKey(name="customerId")
-	private Map<Long,Customer> customers = new HashMap<>();;
+	private Map<Long,Customer> customers = new HashMap<>();
+	
+//	@ToString.Exclude
+//	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "coupons", cascade=CascadeType.ALL)
+//	@MapKey(name="customerId")
+//	private Map<Long,Customer> customers = new HashMap<>();;
 	
 	public Coupon(long couponId, String title, String endDate, int amount, CouponType type, String couponMessage,
 			double price, String image) {
