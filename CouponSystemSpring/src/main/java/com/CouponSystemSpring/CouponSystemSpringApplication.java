@@ -1,30 +1,31 @@
 package com.CouponSystemSpring;
 
-import java.time.LocalDate;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
 import com.CouponSystemSpring.model.Company;
 import com.CouponSystemSpring.model.Coupon;
 import com.CouponSystemSpring.model.CouponType;
 import com.CouponSystemSpring.model.Customer;
-import com.CouponSystemSpring.repository.CompanyRepository;
 import com.CouponSystemSpring.repository.CouponRepository;
 import com.CouponSystemSpring.service.AdminService;
 import com.CouponSystemSpring.service.AdminServiceImpl;
 import com.CouponSystemSpring.service.CompanyServiceImpl;
-import com.CouponSystemSpring.service.CustomerService;
 import com.CouponSystemSpring.service.CustomerServiceImpl;
-import com.CouponSystemSpring.utils.DateConverterUtil;
-
-import net.bytebuddy.asm.Advice.This;
 
 @SpringBootApplication
 @ComponentScan({ "com.CouponSystemSpring" })
 public class CouponSystemSpringApplication {
+
+//	@Bean
+//	public CompanyServiceImpl companyServiceImplCola() {
+//		CompanyServiceImpl companyServiceImpl = new CompanyServiceImpl();
+//		companyServiceImpl.setCompany(new Company(companyId, companyName, companyPassword, companyEmail));
+//		return companyServiceImpl;
+//	}
 
 	public static void main(String[] args) throws Exception {
 		ConfigurableApplicationContext applicationContext = SpringApplication.run(CouponSystemSpringApplication.class,
@@ -36,28 +37,25 @@ public class CouponSystemSpringApplication {
 
 		Customer customer = new Customer(314, "Tal Yamin", "Tal313");
 		Customer customer2 = new Customer(456, "Ofek Mesika", "Ofek456");
-		
+
 		AdminService adminService = applicationContext.getBean(AdminServiceImpl.class);
-//		adminService.addCompany(company);
-//		adminService.addCompany(company2);
-//
-//		adminService.addCustomer(customer);
-//		adminService.addCustomer(customer2);
-		
-		
+		// adminService.addCompany(company);
+		// adminService.addCompany(company2);
+		//
+		// adminService.addCustomer(customer);
+		// adminService.addCustomer(customer2);
+
 		CompanyServiceImpl companyService = applicationContext.getBean(CompanyServiceImpl.class);
 		companyService.setCompany(company);
 
 		CompanyServiceImpl companyService2 = applicationContext.getBean(CompanyServiceImpl.class);
 		companyService2.setCompany(company2);
-		
+
 		CustomerServiceImpl customerService = applicationContext.getBean(CustomerServiceImpl.class);
 		customerService.setCustomer(customer);
 
 		CustomerServiceImpl customerService2 = applicationContext.getBean(CustomerServiceImpl.class);
 		customerService2.setCustomer(customer2);
-		
-
 
 		/*****************************************/
 
@@ -316,22 +314,25 @@ public class CouponSystemSpringApplication {
 
 		// companyService2.addCoupon(coupon);
 		//
-//		 customerService.purchaseCoupon(21);
-//		 customerService.purchaseCoupon(22);
-//		 customerService.purchaseCoupon(24);
-		
-//		companyService.addCoupon(coupon);
-//		companyService.addCoupon(coupon2);
-//		companyService.addCoupon(coupon3);
+		// customerService.purchaseCoupon(21);
+		// customerService.purchaseCoupon(22);
+		// customerService.purchaseCoupon(24);
+
+		// companyService.addCoupon(coupon);
+		// companyService.addCoupon(coupon2);
+		// companyService.addCoupon(coupon3);
 		// companyService2.addCoupon(coupon);
 
 		// System.out.println( customerService.getAllPurchases());
-		
-//		System.out.println(companyService.updateCoupon(21, "1/10/2019", 400));
-		
-//		customerService2.purchaseCoupon(24);
-		
-//		System.out.println(customerService.getAllPurchases());
+
+		// System.out.println(companyService.updateCoupon(21, "1/10/2019", 400));
+
+		// customerService2.purchaseCoupon(24);
+
+		// System.out.println(customerService.getAllPurchases());
+
+		// System.out.println(customerService.getAllCouponsList());
+
 	}
 
 }
