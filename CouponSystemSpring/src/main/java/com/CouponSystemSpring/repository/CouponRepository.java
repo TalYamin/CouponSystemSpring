@@ -5,6 +5,7 @@ import java.util.List;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.CouponSystemSpring.model.Coupon;
@@ -26,5 +27,9 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
 	public boolean existsByTitle (String title);
 	
 	public boolean existsByCouponIdAndCompanyCompanyId(long couponId, long companyId);
+	
+//	@Query("SELECT c FROM customer AS cust join customer_coupon AS c WHERE cust.customer_id=:customerId AND c.type =:typeName")
+//	public List<Coupon> findAllCustomerCouponByType (long customerId, String typeName);
+	
 
 }

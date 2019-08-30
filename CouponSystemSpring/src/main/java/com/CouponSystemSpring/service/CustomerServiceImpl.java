@@ -1,6 +1,7 @@
 package com.CouponSystemSpring.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,9 +19,11 @@ import com.CouponSystemSpring.exception.ObjectNotFoundException;
 import com.CouponSystemSpring.exception.OutOfStockException;
 import com.CouponSystemSpring.exception.SamePurchaseException;
 import com.CouponSystemSpring.model.Coupon;
+import com.CouponSystemSpring.model.CouponType;
 import com.CouponSystemSpring.model.Customer;
 import com.CouponSystemSpring.repository.CouponRepository;
 import com.CouponSystemSpring.repository.CustomerRepository;
+import com.CouponSystemSpring.utils.CouponTypeConverter;
 import com.CouponSystemSpring.utils.ServiceStatus;
 
 @Service
@@ -84,12 +87,13 @@ public class CustomerServiceImpl implements CustomerService, CouponClient {
 						this.clientType, couponId);
 			}
 
-			if (couponRepository.findById((long) couponId).get().getCustomers().containsKey(this.customer.getCustomerId())) {
+			if (couponRepository.findById((long) couponId).get().getCustomers()
+					.containsKey(this.customer.getCustomerId())) {
 				throw new SamePurchaseException("Customer unable to purchase - already purchased same coupon. ",
 						couponId, this.customer.getCustomerId());
 			}
 
-			Coupon c = couponRepository.findById((long) 21).get();
+			Coupon c = couponRepository.findById((long) couponId).get();
 
 			if (c.getAmount() <= 0) {
 				throw new OutOfStockException("Customer unable to purchase - this coupon is out of stock. ",
@@ -151,8 +155,8 @@ public class CustomerServiceImpl implements CustomerService, CouponClient {
 	public List<Coupon> getAllPurchases() throws Exception {
 		try {
 
-			Map<Long, Coupon> coupons =  customerRepository.findById(this.customer.getCustomerId()).get().getCoupons();
-			List<Coupon> couponsList =  coupons.values().stream().collect(Collectors.toList());
+			Map<Long, Coupon> coupons = customerRepository.findById(this.customer.getCustomerId()).get().getCoupons();
+			List<Coupon> couponsList = coupons.values().stream().collect(Collectors.toList());
 
 			if (coupons.isEmpty()) {
 				throw new NoDetailsFoundException(
@@ -175,21 +179,88 @@ public class CustomerServiceImpl implements CustomerService, CouponClient {
 	@Transactional
 	@Override
 	public List<Coupon> getAllCouponsByType(String typeName) throws Exception {
-		// TODO Auto-generated method stub
+		try {
+			Map<Long, Coupon> coupons = customerRepository.findById(this.customer.getCustomerId()).get().getCoupons();
+			List<Coupon> couponsList = coupons.values().stream().collect(Collectors.toList());
+
+			List<Coupon> couponsToView = new ArrayList<>();
+			for (Coupon c : couponsList) {
+				if (c.getType() == CouponTypeConverter.convertStringToType(typeName)) {
+					couponsToView.add(c);
+				}
+			}
+
+			if (couponsToView.isEmpty()) {
+				throw new NoDetailsFoundException(
+						"Customer " + this.customer.getCustomerId()
+								+ " failed to get all coupons by type - no details found",
+						this.customer.getCustomerId(), this.clientType);
+			}
+			return couponsToView;
+
+		} catch (NoDetailsFoundException e) {
+			System.err.println(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("Customer failed to get coupons data by Type. customerId: "
+					+ this.customer.getCustomerId() + " couponType: " + typeName);
+		}
 		return null;
 	}
 
 	@Transactional
 	@Override
 	public List<Coupon> getAllCouponsByPrice(double priceTop) throws Exception {
-		// TODO Auto-generated method stub
+		try {
+			Map<Long, Coupon> coupons = customerRepository.findById(this.customer.getCustomerId()).get().getCoupons();
+			List<Coupon> couponsList = coupons.values().stream().collect(Collectors.toList());
+
+			List<Coupon> couponsToView = new ArrayList<>();
+			for (Coupon c : couponsList) {
+				if (c.getPrice() <= priceTop) {
+					couponsToView.add(c);
+				}
+			}
+
+			if (couponsToView.isEmpty()) {
+				throw new NoDetailsFoundException(
+						"Customer " + this.customer.getCustomerId()
+								+ " failed to get all coupons by price - no details found",
+						this.customer.getCustomerId(), this.clientType);
+			}
+			return couponsToView;
+
+		} catch (NoDetailsFoundException e) {
+			System.err.println(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("Customer failed to get coupons data by Price. customerId: "
+					+ this.customer.getCustomerId() + " priceTop: " + priceTop);
+		}
 		return null;
 	}
 
 	@Transactional
 	@Override
 	public List<Coupon> getAllCouponsList() throws Exception {
-		// TODO Auto-generated method stub
+		try {
+			List<Coupon>coupons = couponRepository.findAll();
+
+			if (coupons.isEmpty()) {
+				throw new NoDetailsFoundException(
+						"Customer " + this.customer.getCustomerId()
+								+ " failed to get all coupons list - no details found",
+						this.customer.getCustomerId(), this.clientType);
+			}
+			return coupons;
+
+		} catch (NoDetailsFoundException e) {
+			System.err.println(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("Customer failed to get coupons list. customerId: "
+					+ this.customer.getCustomerId());
+		}
 		return null;
 	}
 
