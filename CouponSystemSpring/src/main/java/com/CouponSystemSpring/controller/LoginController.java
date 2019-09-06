@@ -43,6 +43,7 @@ public class LoginController {
 			session.setCouponClient(couponClient);
 			session.setLastAccessed(lastAccessed);
 			tokens.getTokensMap().put(token, session);
+			System.out.println("token: " + token);
 			return new ResponseEntity<>(token, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
