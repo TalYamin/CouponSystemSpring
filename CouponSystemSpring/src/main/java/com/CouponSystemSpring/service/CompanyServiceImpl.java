@@ -1,6 +1,5 @@
 package com.CouponSystemSpring.service;
 
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.CouponSystemSpring.exception.AmountException;
 import com.CouponSystemSpring.exception.CouponExistsException;
 import com.CouponSystemSpring.exception.EndDatePassedException;
+import com.CouponSystemSpring.exception.IdExsistsException;
 import com.CouponSystemSpring.exception.NoDetailsFoundException;
 import com.CouponSystemSpring.exception.NotBelongsException;
 import com.CouponSystemSpring.exception.ObjectNotFoundException;
@@ -38,8 +38,8 @@ public class CompanyServiceImpl implements CompanyService, CouponClient {
 
 	@Resource
 	private CouponRepository couponRepository;
-	
-	@Resource 
+
+	@Resource
 	private CustomerRepository customerRepository;
 
 	private ClientType clientType = ClientType.COMPANY;
@@ -83,6 +83,11 @@ public class CompanyServiceImpl implements CompanyService, CouponClient {
 						coupon.getTitle(), this.company.getCompanyId());
 			}
 
+			if (couponRepository.existsById(coupon.getCouponId())) {
+				throw new IdExsistsException("Company failed to add coupon - this id already exists. ",
+						coupon.getCouponId());
+			}
+
 			coupon.setCompany(this.company);
 			List<Coupon> couponsList = this.company.getCoupons();
 			couponsList.add(coupon);
@@ -106,6 +111,10 @@ public class CompanyServiceImpl implements CompanyService, CouponClient {
 			serviceStatus.setSuccess(false);
 			serviceStatus.setMessage(e.getMessage());
 		} catch (CouponExistsException e) {
+			System.err.println(e.getMessage());
+			serviceStatus.setSuccess(false);
+			serviceStatus.setMessage(e.getMessage());
+		} catch (IdExsistsException e) {
 			System.err.println(e.getMessage());
 			serviceStatus.setSuccess(false);
 			serviceStatus.setMessage(e.getMessage());
@@ -133,7 +142,7 @@ public class CompanyServiceImpl implements CompanyService, CouponClient {
 						"Company failed to remove coupon - this coupon not belongs to this company. ",
 						this.company.getCompanyId(), this.clientType.toString(), couponId);
 			}
-			
+
 			couponRepository.deleteById(couponId);
 			List<Coupon> couponsList = couponRepository.findAllByCompanyCompanyId(this.company.getCompanyId());
 			this.company.setCoupons(couponsList);
