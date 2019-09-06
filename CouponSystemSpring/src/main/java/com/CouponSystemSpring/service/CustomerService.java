@@ -20,4 +20,6 @@ public interface CustomerService {
 	
 	public List<Coupon> getAllCouponsList() throws Exception;
 	
+	public void setCustomer(Customer customer);
+	
 }

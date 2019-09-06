@@ -25,4 +25,7 @@ public interface CompanyService {
 	public List<Coupon> getAllCouponsByPrice(double priceTop) throws Exception;
 	
 	public List<Coupon> getAllCouponsByDate(String untilDate) throws Exception;
+	
+	public void setCompany(Company company);
 }
+

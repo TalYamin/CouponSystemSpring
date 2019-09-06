@@ -18,6 +18,7 @@ import javax.persistence.MapKey;
 import javax.persistence.Transient;
 
 import com.CouponSystemSpring.utils.DateConverterUtil;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonIgnoreProperties(value = {"customer", "company"})
 public class Coupon {
 	
 	@Id

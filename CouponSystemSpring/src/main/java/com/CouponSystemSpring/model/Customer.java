@@ -7,11 +7,14 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.MapKey;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,6 +26,7 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
+@JsonIgnoreProperties(value = {"coupons"})
 public class Customer {
 	
 	@Id
@@ -38,8 +42,9 @@ public class Customer {
 	@Column(nullable = false)
 	private @NonNull String customerPassword;
 	
-	
-	@ManyToMany(cascade = { CascadeType.ALL })
+
+	@ToString.Exclude
+	@ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
 	@MapKey(name="couponId")
     @JoinTable(
         name = "Customer_Coupon", 

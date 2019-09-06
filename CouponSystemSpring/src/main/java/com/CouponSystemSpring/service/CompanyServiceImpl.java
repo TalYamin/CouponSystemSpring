@@ -1,6 +1,7 @@
 package com.CouponSystemSpring.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -19,8 +20,10 @@ import com.CouponSystemSpring.exception.ObjectNotFoundException;
 import com.CouponSystemSpring.model.Company;
 import com.CouponSystemSpring.model.Coupon;
 import com.CouponSystemSpring.model.CouponType;
+import com.CouponSystemSpring.model.Customer;
 import com.CouponSystemSpring.repository.CompanyRepository;
 import com.CouponSystemSpring.repository.CouponRepository;
+import com.CouponSystemSpring.repository.CustomerRepository;
 import com.CouponSystemSpring.utils.CouponTypeConverter;
 import com.CouponSystemSpring.utils.DateConverterUtil;
 import com.CouponSystemSpring.utils.ServiceStatus;
@@ -34,6 +37,9 @@ public class CompanyServiceImpl implements CompanyService, CouponClient {
 
 	@Resource
 	private CouponRepository couponRepository;
+	
+	@Resource 
+	private CustomerRepository customerRepository;
 
 	private ClientType clientType = ClientType.COMPANY;
 
@@ -126,7 +132,7 @@ public class CompanyServiceImpl implements CompanyService, CouponClient {
 						"Company failed to remove coupon - this coupon not belongs to this company. ",
 						this.company.getCompanyId(), this.clientType.toString(), couponId);
 			}
-
+			
 			couponRepository.deleteById(couponId);
 			List<Coupon> couponsList = couponRepository.findAllByCompanyCompanyId(this.company.getCompanyId());
 			this.company.setCoupons(couponsList);
