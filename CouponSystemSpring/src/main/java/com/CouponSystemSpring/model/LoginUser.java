@@ -1,5 +1,6 @@
 package com.CouponSystemSpring.model;
 
+
 import com.CouponSystemSpring.service.ClientType;
 
 import lombok.AllArgsConstructor;

@@ -1,5 +1,6 @@
 package com.CouponSystemSpring.model;
 
+
 import java.util.Map;
 
 import org.springframework.stereotype.Component;

@@ -1,5 +1,6 @@
 package com.CouponSystemSpring.utils;
 
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 import lombok.AllArgsConstructor;

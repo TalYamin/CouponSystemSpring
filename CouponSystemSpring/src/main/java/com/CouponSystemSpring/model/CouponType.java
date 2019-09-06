@@ -1,5 +1,6 @@
 package com.CouponSystemSpring.model;
 
+
 public enum CouponType {
 	
 	RESTAURANTS

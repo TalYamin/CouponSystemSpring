@@ -1,5 +1,6 @@
 package com.CouponSystemSpring.utils;
 
+
 import com.CouponSystemSpring.model.CouponType;
 
 public class CouponTypeConverter {

@@ -1,5 +1,6 @@
 package com.CouponSystemSpring.model;
 
+
 import com.CouponSystemSpring.service.CouponClient;
 
 public class Session {

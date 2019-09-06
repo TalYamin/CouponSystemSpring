@@ -1,5 +1,6 @@
 package com.CouponSystemSpring.model;
 
+
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
