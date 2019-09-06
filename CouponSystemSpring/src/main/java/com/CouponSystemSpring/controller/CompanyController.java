@@ -336,7 +336,7 @@ public class CompanyController {
 		return null;
 	}
 	
-	@GetMapping("getAllCouponsByDate/{token}")
+	@PostMapping("getAllCouponsByDate/{token}")
 	public ResponseEntity<?> getAllCouponsByDate(@RequestBody String jsonString, @PathVariable("token") String token) {
 		try {
 
