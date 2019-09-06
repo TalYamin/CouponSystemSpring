@@ -1,5 +1,6 @@
 package com.CouponSystemSpring.service;
 
+
 import java.util.List;
 
 import com.CouponSystemSpring.model.Coupon;
@@ -19,5 +20,7 @@ public interface CustomerService {
 	public List<Coupon> getAllCouponsByPrice(double priceTop) throws Exception;
 	
 	public List<Coupon> getAllCouponsList() throws Exception;
+	
+	public void setCustomer(Customer customer);
 	
 }

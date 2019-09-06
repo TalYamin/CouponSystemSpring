@@ -1,5 +1,6 @@
 package com.CouponSystemSpring;
 
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -13,8 +14,12 @@ import com.CouponSystemSpring.model.Customer;
 import com.CouponSystemSpring.repository.CouponRepository;
 import com.CouponSystemSpring.service.AdminService;
 import com.CouponSystemSpring.service.AdminServiceImpl;
+import com.CouponSystemSpring.service.ClientType;
+import com.CouponSystemSpring.service.CompanyService;
 import com.CouponSystemSpring.service.CompanyServiceImpl;
+import com.CouponSystemSpring.service.CustomerService;
 import com.CouponSystemSpring.service.CustomerServiceImpl;
+import com.CouponSystemSpring.utils.CouponSystem;
 
 @SpringBootApplication
 @ComponentScan({ "com.CouponSystemSpring" })
@@ -332,7 +337,20 @@ public class CouponSystemSpringApplication {
 		// System.out.println(customerService.getAllPurchases());
 
 		// System.out.println(customerService.getAllCouponsList());
-
+		
+		CouponSystem couponSystem = applicationContext.getBean(CouponSystem.class);
+//		CompanyService companyServiceTest = (CompanyService) couponSystem.login("Lenovo", "Lenovo5432", ClientType.COMPANY);
+//		System.out.println(companyServiceTest.getCompany());
+//		System.out.println(companyServiceTest.getAllCoupons());
+		
+//		CustomerService customerServiceTest = (CustomerService) couponSystem.login("Tal Yamin", "Tal313", ClientType.CUSTOMER);
+//		System.out.println(customerServiceTest.getCustomer());
+//		System.out.println(customerServiceTest.getAllCouponsByType("Sports"));
+		
+//		AdminService adminServiceTest = (AdminService) couponSystem.login("admin", "1234", ClientType.ADMIN);
+//		adminService.getAllCompanies();
+//		adminService.getAllCustomers();
+		
 	}
 
 }

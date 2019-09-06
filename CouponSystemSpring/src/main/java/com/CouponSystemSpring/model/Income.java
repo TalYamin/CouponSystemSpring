@@ -1,5 +1,6 @@
 package com.CouponSystemSpring.model;
 
+
 import java.time.LocalDate;
 
 import javax.persistence.Basic;

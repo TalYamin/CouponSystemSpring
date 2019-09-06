@@ -1,5 +1,6 @@
 package com.CouponSystemSpring.utils;
 
+
 import org.springframework.stereotype.Component;
 
 import lombok.AllArgsConstructor;

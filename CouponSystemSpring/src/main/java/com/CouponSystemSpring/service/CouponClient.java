@@ -2,6 +2,7 @@ package com.CouponSystemSpring.service;
 
 
 
+
 //interface which include login method
 
 public interface CouponClient {

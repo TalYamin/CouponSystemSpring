@@ -1,5 +1,6 @@
 package com.CouponSystemSpring.repository;
 
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,4 +13,5 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 	
 	public boolean existsByCustomerName (String CustomerName );
 	
+	public Customer findByCustomerNameAndCustomerPassword (String customerName, String customerPassword);
 }
