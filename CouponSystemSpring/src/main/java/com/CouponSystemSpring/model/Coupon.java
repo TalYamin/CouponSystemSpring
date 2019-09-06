@@ -31,7 +31,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @NoArgsConstructor
-@JsonIgnoreProperties(value = {"customer", "company"})
+@JsonIgnoreProperties(value = {"customers", "company", "customStartDate", "customEndDate"})
 public class Coupon {
 	
 	@Id
