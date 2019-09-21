@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import com.CouponSystemSpring.exception.CouponExpiredException;
+import com.CouponSystemSpring.exception.IncomeException;
 import com.CouponSystemSpring.exception.NoDetailsFoundException;
 import com.CouponSystemSpring.exception.ObjectNotFoundException;
 import com.CouponSystemSpring.exception.OutOfStockException;
@@ -22,6 +23,8 @@ import com.CouponSystemSpring.exception.SamePurchaseException;
 import com.CouponSystemSpring.model.Coupon;
 import com.CouponSystemSpring.model.CouponType;
 import com.CouponSystemSpring.model.Customer;
+import com.CouponSystemSpring.model.Income;
+import com.CouponSystemSpring.model.IncomeType;
 import com.CouponSystemSpring.repository.CouponRepository;
 import com.CouponSystemSpring.repository.CustomerRepository;
 import com.CouponSystemSpring.utils.CouponTypeConverter;
@@ -41,6 +44,9 @@ public class CustomerServiceImpl implements CustomerService, CouponClient {
 
 	@Resource
 	private ServiceStatus serviceStatus;
+	
+	@Resource
+	private IncomeService incomeService;
 
 	private Customer customer;
 
@@ -122,11 +128,17 @@ public class CustomerServiceImpl implements CustomerService, CouponClient {
 
 			newCoupon.setAmount(newCoupon.getAmount() - 1);
 			couponRepository.save(newCoupon);
-
+			
+			Income income = new Income(this.customer.getCustomerName(), this.customer.getCustomerId(), LocalDate.now(), IncomeType.CUSTOMER_PURCHASE, newCoupon.getPrice());
+			ServiceStatus incomeStatus = incomeService.storeIncome(income);
+			if (incomeStatus.isSuccess() == false) {
+				throw new IncomeException("Customer failed to store income",this.customer.getCustomerId(), this.customer.getCustomerName());
+			}
+			
 			System.out.println("Customer " + customer.getCustomerName() + " purchased successfully Coupon " + couponId);
 			serviceStatus.setSuccess(true);
 			serviceStatus.setMessage(
-					"success, Customer " + customer.getCustomerName() + " purchased successfully Coupon " + couponId);
+					"success, Customer " + customer.getCustomerName() + " purchased successfully Coupon " + couponId + ". Your account was charged for " + newCoupon.getPrice()+ " NIS");
 			return serviceStatus;
 		} catch (ObjectNotFoundException e) {
 			System.err.println(e.getMessage());
@@ -141,6 +153,10 @@ public class CustomerServiceImpl implements CustomerService, CouponClient {
 			serviceStatus.setSuccess(false);
 			serviceStatus.setMessage(e.getMessage());
 		} catch (CouponExpiredException e) {
+			System.err.println(e.getMessage());
+			serviceStatus.setSuccess(false);
+			serviceStatus.setMessage(e.getMessage());
+		}catch (IncomeException e) {
 			System.err.println(e.getMessage());
 			serviceStatus.setSuccess(false);
 			serviceStatus.setMessage(e.getMessage());

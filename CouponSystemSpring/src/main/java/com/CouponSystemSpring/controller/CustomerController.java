@@ -119,7 +119,7 @@ public class CustomerController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		ResponseEntity<ServiceStatus> badResult = new ResponseEntity<>(serviceStatus, HttpStatus.BAD_REQUEST);
+		ResponseEntity<ServiceStatus> badResult = new ResponseEntity<>(serviceStatus, HttpStatus.OK);
 		return badResult;
 	}
 

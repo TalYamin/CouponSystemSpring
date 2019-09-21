@@ -3,14 +3,12 @@ package com.CouponSystemSpring.service;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 
-import java.awt.Image;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.CouponSystemSpring.exception.IncomeControllerException;
 import com.CouponSystemSpring.model.Income;
 import com.CouponSystemSpring.repository.IncomeRepository;
 import com.CouponSystemSpring.utils.ServiceStatus;
@@ -34,8 +32,11 @@ public class IncomeServiceImpl implements IncomeService {
 			System.out.println("Success, Income was stored: " + income);
 			return serviceStatus;
 		} catch (Exception e) {
-			throw new Exception("Failed to store income");
-		}
+			serviceStatus.setSuccess(false);
+			serviceStatus.setMessage("Failed to store income: " + income);
+			System.out.println(e.getMessage());
+			}
+		return serviceStatus;
 	}
 
 	@Override
@@ -47,8 +48,10 @@ public class IncomeServiceImpl implements IncomeService {
 			return incomes;
 
 		} catch (Exception e) {
-			throw new Exception("failed to view all incomes");
+			System.out.println(e.getMessage());
 		}
+		return null;
+		
 	}
 
 	@Override
@@ -61,8 +64,9 @@ public class IncomeServiceImpl implements IncomeService {
 			return incomesByCustomer;
 
 		} catch (Exception e) {
-			throw new Exception("failed to view all incomes by customer: " + customerId);
+			System.out.println(e.getMessage());
 		}
+		return null;
 	}
 
 	@Override
@@ -75,8 +79,9 @@ public class IncomeServiceImpl implements IncomeService {
 			return incomesByCompany;
 
 		} catch (Exception e) {
-			throw new Exception("failed to view all incomes by company: " + companyId);
+			System.out.println(e.getMessage());
 		}
+		return null;
 	}
 
 }
