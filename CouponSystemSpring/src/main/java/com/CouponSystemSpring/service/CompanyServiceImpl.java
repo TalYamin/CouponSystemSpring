@@ -15,6 +15,7 @@ import com.CouponSystemSpring.exception.AmountException;
 import com.CouponSystemSpring.exception.CouponExistsException;
 import com.CouponSystemSpring.exception.EndDatePassedException;
 import com.CouponSystemSpring.exception.IdExsistsException;
+import com.CouponSystemSpring.exception.IncomeException;
 import com.CouponSystemSpring.exception.NoDetailsFoundException;
 import com.CouponSystemSpring.exception.NotBelongsException;
 import com.CouponSystemSpring.exception.ObjectNotFoundException;
@@ -22,6 +23,8 @@ import com.CouponSystemSpring.model.Company;
 import com.CouponSystemSpring.model.Coupon;
 import com.CouponSystemSpring.model.CouponType;
 import com.CouponSystemSpring.model.Customer;
+import com.CouponSystemSpring.model.Income;
+import com.CouponSystemSpring.model.IncomeType;
 import com.CouponSystemSpring.repository.CompanyRepository;
 import com.CouponSystemSpring.repository.CouponRepository;
 import com.CouponSystemSpring.repository.CustomerRepository;
@@ -41,6 +44,9 @@ public class CompanyServiceImpl implements CompanyService, CouponClient {
 
 	@Resource
 	private CustomerRepository customerRepository;
+	
+	@Resource
+	private IncomeService incomeService;
 
 	private ClientType clientType = ClientType.COMPANY;
 
@@ -94,12 +100,17 @@ public class CompanyServiceImpl implements CompanyService, CouponClient {
 			this.company.setCoupons(couponsList);
 			couponRepository.save(coupon);
 			companyRepository.save(this.company);
-
+			Income income = new Income(this.company.getCompanyName(), this.company.getCompanyId(), LocalDate.now(), IncomeType.COMPANY_NEW_COUPON, 100);
+			ServiceStatus incomeStatus = incomeService.storeIncome(income);
+			if (incomeStatus.isSuccess() == false) {
+				throw new IncomeException("Company failed to store income",this.company.getCompanyId(), this.company.getCompanyName());
+			}
+			
 			System.out
 					.println("Company " + this.company.getCompanyName() + " added new coupon: " + coupon.getCouponId());
 			serviceStatus.setSuccess(true);
 			serviceStatus.setMessage(
-					"success, Company " + this.company.getCompanyName() + " added new coupon: " + coupon.getCouponId());
+					"success, Company " + this.company.getCompanyName() + " added new coupon: " + coupon.getCouponId() + ". Your account was charged for 100.0 NIS");
 			return serviceStatus;
 
 		} catch (AmountException e) {
@@ -115,6 +126,10 @@ public class CompanyServiceImpl implements CompanyService, CouponClient {
 			serviceStatus.setSuccess(false);
 			serviceStatus.setMessage(e.getMessage());
 		} catch (IdExsistsException e) {
+			System.err.println(e.getMessage());
+			serviceStatus.setSuccess(false);
+			serviceStatus.setMessage(e.getMessage());
+		} catch (IncomeException e) {
 			System.err.println(e.getMessage());
 			serviceStatus.setSuccess(false);
 			serviceStatus.setMessage(e.getMessage());
@@ -196,11 +211,11 @@ public class CompanyServiceImpl implements CompanyService, CouponClient {
 			coupon.setEndDate(DateConverterUtil.convertStringDate(newEndDate));
 			coupon.setPrice(newPrice);
 
-			System.err.println(coupon.getStartDate());
-			System.err.println(couponRepository.findById(couponId).get().getStartDate());
-			System.err.println(coupon.getEndDate());
-			System.err.println(couponRepository.findById(couponId).get().getEndDate());
-			System.err.println(LocalDate.now());
+//			System.err.println(coupon.getStartDate());
+//			System.err.println(couponRepository.findById(couponId).get().getStartDate());
+//			System.err.println(coupon.getEndDate());
+//			System.err.println(couponRepository.findById(couponId).get().getEndDate());
+//			System.err.println(LocalDate.now());
 
 			if (coupon.getEndDate().isBefore(LocalDate.now())) {
 				throw new EndDatePassedException("Company failed to update coupon - the end date already passed. ",
@@ -208,11 +223,16 @@ public class CompanyServiceImpl implements CompanyService, CouponClient {
 			}
 
 			couponRepository.save(coupon);
-
+			Income income = new Income(this.company.getCompanyName(), this.company.getCompanyId(), LocalDate.now(), IncomeType.COMPANY_UPDATE_COUPON, 10);
+			ServiceStatus incomeStatus = incomeService.storeIncome(income);
+			if (incomeStatus.isSuccess() == false) {
+				throw new IncomeException("Company failed to store income",this.company.getCompanyId(), this.company.getCompanyName());
+			}
+			
 			System.out.println("Company " + this.company.getCompanyName() + " updated coupon: " + coupon.getCouponId());
 			serviceStatus.setSuccess(true);
 			serviceStatus.setMessage(
-					"success, Company " + this.company.getCompanyName() + " updated coupon: " + coupon.getCouponId());
+					"success, Company " + this.company.getCompanyName() + " updated coupon: " + coupon.getCouponId()+ ". Your account was charged for 10.0 NIS");
 			return serviceStatus;
 
 		} catch (ObjectNotFoundException e) {
@@ -227,7 +247,11 @@ public class CompanyServiceImpl implements CompanyService, CouponClient {
 			System.err.println(e.getMessage());
 			serviceStatus.setSuccess(false);
 			serviceStatus.setMessage(e.getMessage());
-		} catch (Exception e) {
+		}catch (IncomeException e) {
+			System.err.println(e.getMessage());
+			serviceStatus.setSuccess(false);
+			serviceStatus.setMessage(e.getMessage());
+		}  catch (Exception e) {
 			e.printStackTrace();
 			throw new Exception("Company failed to update coupon. couponId: " + couponId);
 		}
